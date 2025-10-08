@@ -36,19 +36,45 @@ function init() {
   window.addEventListener('resize', onWindowResize);
 }
 
+// Función para crear la Pokéball
+function createPokeball() {
+  const pokeball = new THREE.Group();
+
+  // Semiesfera roja (arriba)
+  const redMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+  const redSphere = new THREE.SphereGeometry(0.07, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+  const redMesh = new THREE.Mesh(redSphere, redMaterial);
+  redMesh.position.y = 0.035; // ajustar al centro
+  pokeball.add(redMesh);
+
+  // Semiesfera blanca (abajo)
+  const whiteMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const whiteSphere = new THREE.SphereGeometry(0.07, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+  const whiteMesh = new THREE.Mesh(whiteSphere, whiteMaterial);
+  whiteMesh.position.y = -0.035; 
+  pokeball.add(whiteMesh);
+
+  // Línea negra central
+  const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+  const line = new THREE.CylinderGeometry(0.072, 0.072, 0.005, 32);
+  const lineMesh = new THREE.Mesh(line, blackMaterial);
+  lineMesh.rotation.x = Math.PI / 2;
+  pokeball.add(lineMesh);
+
+  // Botón central
+  const buttonMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const button = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.01, 32), buttonMaterial);
+  button.position.z = 0.072 / 2;
+  pokeball.add(button);
+
+  return pokeball;
+}
+
 function onSelect() {
-  const geometry = Math.random() > 0.5
-    ? new THREE.BoxGeometry(0.1, 0.1, 0.1)
-    : new THREE.SphereGeometry(0.07, 16, 16);
-
-  const material = new THREE.MeshStandardMaterial({
-    color: Math.random() * 0xffffff
-  });
-
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld);
-  mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
-  scene.add(mesh);
+  const pokeball = createPokeball();
+  pokeball.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld);
+  pokeball.quaternion.setFromRotationMatrix(controller.matrixWorld);
+  scene.add(pokeball);
 }
 
 function onWindowResize() {
